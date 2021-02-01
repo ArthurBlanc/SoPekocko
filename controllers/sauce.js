@@ -25,7 +25,7 @@ exports.createSauce = (req, res, next) => {
 	});
 	sauce
 		.save()
-		.then(() => res.status(201).json({ message: sauce }))
+		.then(() => res.status(201).json({ message: "Votre sauce a été ajoutée !" }))
 		.catch((error) => res.status(400).json({ error }));
 };
 
@@ -38,7 +38,7 @@ exports.modifySauce = (req, res, next) => {
 		  }
 		: { ...req.body };
 	Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-		.then((sauce) => res.status(200).json({ message: sauce }))
+		.then((sauce) => res.status(200).json({ message: "Votre sauce a été modifiée !" }))
 		.catch((error) => res.status(400).json({ error }));
 };
 
@@ -49,7 +49,7 @@ exports.deleteSauce = (req, res, next) => {
 			const filename = sauce.imageUrl.split("/images/")[1];
 			fs.unlink(`images/${filename}`, () => {
 				Sauce.deleteOne({ _id: req.params.id })
-					.then(() => res.status(200).json({ message: sauce }))
+					.then(() => res.status(200).json({ message: "Votre sauce a été supprimée !" }))
 					.catch((error) => res.status(400).json({ error }));
 			});
 		})
@@ -57,3 +57,70 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 // Routes 8/8 //
+exports.likeSauce = (req, res, next) => {
+	Sauce.findOne({
+		_id: req.params.id,
+	})
+		.then((sauce) => {
+			switch (req.body.like) {
+				case 1:
+					if (!sauce.usersLiked.includes(req.body.userId)) {
+						Sauce.updateOne(
+							{ _id: req.params.id },
+							{
+								_id: req.params.id,
+								$inc: { likes: 1 },
+								$push: { usersLiked: req.body.userId },
+							}
+						)
+							.then(() => res.status(201).json({ message: "Votre 'J'aime' a été ajouté !" }))
+							.catch((error) => res.status(400).json({ error }));
+					}
+					break;
+				case -1:
+					if (!sauce.usersDisliked.includes(req.body.userId)) {
+						Sauce.updateOne(
+							{ _id: req.params.id },
+							{
+								_id: req.params.id,
+								$inc: { dislikes: 1 },
+								$push: { usersDisliked: req.body.userId },
+							}
+						)
+							.then(() => res.status(201).json({ message: "Votre 'Je n'aime pas' a été ajouté !" }))
+							.catch((error) => res.status(400).json({ error }));
+					}
+					break;
+				case 0:
+					if (sauce.usersLiked.includes(req.body.userId)) {
+						Sauce.updateOne(
+							{ _id: req.params.id },
+							{
+								_id: req.params.id,
+								$inc: { likes: -1 },
+								$pull: { usersLiked: req.body.userId },
+							}
+						)
+							.then(() => res.status(201).json({ message: "Annulation de votre 'J'aime' !" }))
+							.catch((error) => res.status(400).json({ error }));
+					} else {
+						Sauce.updateOne(
+							{ _id: req.params.id },
+							{
+								_id: req.params.id,
+								$inc: { dislikes: -1 },
+								$pull: { usersDisliked: req.body.userId },
+							}
+						)
+							.then(() => res.status(201).json({ message: "Annulation de votre 'Je n'aime pas' !" }))
+							.catch((error) => res.status(400).json({ error }));
+					}
+					break;
+			}
+		})
+		.catch((error) => {
+			res.status(400).json({
+				error: error,
+			});
+		});
+};
