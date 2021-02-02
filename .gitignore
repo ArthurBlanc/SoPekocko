@@ -2,3 +2,4 @@
 /front-end
 node_modules
 package-lock.json
+.env

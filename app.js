@@ -1,13 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+
 const path = require("path");
 
 const sauceRoutes = require("./routes/sauce");
 const userRoutes = require("./routes/user");
 
+// Security packages
+// Dotenv is a zero-dependency module that loads environment variables from a .env file into process.env
+const dotenv = require("dotenv").config();
+
 mongoose
-	.connect("mongodb+srv://Loweezy:dw%232oInyVPO%24%262ziwUvN0P%5E0KEZV%2A1Do@cluster0.ucdgk.mongodb.net/So_Pekocko?retryWrites=true&w=majority", {
+	.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_CLUSTER}.ucdgk.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	})
@@ -19,7 +24,7 @@ const app = express();
 app.use((req, res, next) => {
 	res.setHeader("Access-Control-Allow-Origin", "*");
 	res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization");
-	res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+	res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
 	next();
 });
 
