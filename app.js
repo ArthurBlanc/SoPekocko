@@ -1,17 +1,19 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
-const path = require("path");
-
-const sauceRoutes = require("./routes/sauce");
-const userRoutes = require("./routes/user");
-
 // Security packages
 // Dotenv is a zero-dependency module that loads environment variables from a .env file into process.env
 const dotenv = require("dotenv").config();
 // Helmet helps secure Express apps by setting various HTTP headers (add 11 security middlewares)
 const helmet = require("helmet");
+// Sanitizes user-supplied data to prevent MongoDB Operator Injection
+// by searching for keys in objects that begin with $ or contain a ., from req.body, req.query or req.params and completely remove these keys and associated data
+const mongoSanitize = require("express-mongo-sanitize");
+
+const path = require("path");
+
+const sauceRoutes = require("./routes/sauce");
+const userRoutes = require("./routes/user");
 
 mongoose
 	.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_CLUSTER}.ucdgk.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
@@ -33,6 +35,8 @@ app.use((req, res, next) => {
 app.use(helmet());
 
 app.use(bodyParser.json());
+
+app.use(mongoSanitize());
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
