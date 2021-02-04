@@ -9,6 +9,8 @@ const helmet = require("helmet");
 // Sanitizes user-supplied data to prevent MongoDB Operator Injection
 // by searching for keys in objects that begin with $ or contain a ., from req.body, req.query or req.params and completely remove these keys and associated data
 const mongoSanitize = require("express-mongo-sanitize");
+// Basic rate-limiting middleware for Express. Use to limit repeated requests to public APIs
+const limiter = require("./middleware/limiter");
 
 const path = require("path");
 
@@ -33,6 +35,7 @@ app.use((req, res, next) => {
 });
 
 app.use(helmet());
+app.use("/api/auth", limiter);
 
 app.use(bodyParser.json());
 
