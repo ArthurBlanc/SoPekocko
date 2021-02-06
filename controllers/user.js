@@ -2,11 +2,20 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const CryptoJS = require("crypto-js");
 const dotenv = require("dotenv").config();
+const validator = require("validator");
 
 const User = require("../models/User");
 
 // Routes 1/8 //
 exports.signup = (req, res, next) => {
+	if (!validator.isEmail(req.body.email)) {
+		return res.status(401).json({ error: "Votre email est invalide !" });
+	}
+	if (!validator.isStrongPassword(req.body.password)) {
+		return res
+			.status(401)
+			.json({ error: "Votre mot de passe n'est pas assez fort ! Il doit contenir au moins 8 caractères dont au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial." });
+	}
 	bcrypt
 		.hash(req.body.password, 10)
 		.then((hash) => {
