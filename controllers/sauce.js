@@ -1,6 +1,8 @@
 const Sauce = require("../models/Sauce");
 
 const fs = require("fs");
+// Just sufficient output filtering to prevent XSS!
+var xssFilters = require("xss-filters");
 
 // Routes 3/8 //
 exports.getAllSauces = (req, res, next) => {
@@ -18,7 +20,7 @@ exports.getOneSauce = (req, res, next) => {
 
 // Routes 5/8 //
 exports.createSauce = (req, res, next) => {
-	const sauceObject = JSON.parse(req.body.sauce);
+	const sauceObject = JSON.parse(xssFilters.inHTMLData(req.body.sauce));
 	const sauce = new Sauce({
 		...sauceObject,
 		imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
@@ -33,7 +35,7 @@ exports.createSauce = (req, res, next) => {
 exports.modifySauce = (req, res, next) => {
 	const sauceObject = req.file
 		? {
-				...JSON.parse(req.body.sauce),
+				...JSON.parse(xssFilters.inHTMLData(req.body.sauce)),
 				imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
 		  }
 		: { ...req.body };
