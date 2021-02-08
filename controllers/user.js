@@ -6,6 +6,9 @@ const validator = require("validator");
 
 const User = require("../models/User");
 
+var key = CryptoJS.enc.Hex.parse(`${process.env.CRYPTOJS_SECRET_KEY}`);
+var iv = CryptoJS.enc.Hex.parse(`${process.env.CRYPTOJS_SECRET_IV}`);
+
 // Routes 1/8 //
 exports.signup = (req, res, next) => {
 	if (!validator.isEmail(req.body.email)) {
@@ -20,7 +23,7 @@ exports.signup = (req, res, next) => {
 		.hash(req.body.password, 10)
 		.then((hash) => {
 			const user = new User({
-				email: CryptoJS.HmacSHA512(req.body.email, `${process.env.CRYPTOJS_SECRET_KEY}`).toString(),
+				email: CryptoJS.AES.encrypt(req.body.email, key, { iv: iv }).toString(),
 				password: hash,
 			});
 			user.save()
@@ -32,7 +35,7 @@ exports.signup = (req, res, next) => {
 
 // Routes 2/8 //
 exports.login = (req, res, next) => {
-	User.findOne({ email: CryptoJS.HmacSHA512(req.body.email, `${process.env.CRYPTOJS_SECRET_KEY}`).toString() })
+	User.findOne({ email: CryptoJS.AES.encrypt(req.body.email, key, { iv: iv }).toString() })
 		.then((user) => {
 			if (!user) {
 				return res.status(404).json({ error: "Utilisateur non trouvé !" });
