@@ -1,22 +1,28 @@
+// Import "express" package - Fast, unopinionated, minimalist web framework
 const express = require("express");
+// Import "body-parser" package - Node.js body parsing middleware
 const bodyParser = require("body-parser");
+// Import "mongoose" package - Mongoose MongoDB ODM
 const mongoose = require("mongoose");
 // Security packages
-// Dotenv is a zero-dependency module that loads environment variables from a .env file into process.env
+// Import "dotenv" package - Loads environment variables from .env file
 const dotenv = require("dotenv").config();
-// Helmet helps secure Express apps by setting various HTTP headers (add 11 security middlewares)
+// Import "helmet" package - Helmet helps secure Express apps by setting various HTTP headers (add 11 security middlewares)
 const helmet = require("helmet");
-// Sanitizes user-supplied data to prevent MongoDB Operator Injection
+// Import "express-mongo-sanitize" package - Sanitizes user-supplied data to prevent MongoDB Operator Injection
 // by searching for keys in objects that begin with $ or contain a ., from req.body, req.query or req.params and completely remove these keys and associated data
 const mongoSanitize = require("express-mongo-sanitize");
-// Basic rate-limiting middleware for Express. Use to limit repeated requests to public APIs
+// Import "limiter" middleware - Basic IP rate-limiting middleware. Use to limit repeated requests to public APIs and/or endpoints (Brute force)
 const limiter = require("./middleware/limiter");
+
+// Import "sauce" route
+const sauceRoutes = require("./routes/sauce");
+// Import "user" route
+const userRoutes = require("./routes/user");
 
 const path = require("path");
 
-const sauceRoutes = require("./routes/sauce");
-const userRoutes = require("./routes/user");
-
+// MongoDB connection with "mongoose" and environment variables (dotenv)
 mongoose
 	.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_CLUSTER}.ucdgk.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
 		useNewUrlParser: true,

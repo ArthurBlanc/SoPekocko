@@ -1,3 +1,4 @@
+// Import "mongoose" package - Mongoose MongoDB ODM
 const mongoose = require("mongoose");
 
 const sauceSchema = mongoose.Schema({
