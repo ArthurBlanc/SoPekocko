@@ -41,6 +41,13 @@ exports.modifySauce = (req, res, next) => {
 				imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
 		  }
 		: { ...req.body };
+	// If the modification contains an image remove old image
+	if (req.file != null) {
+		Sauce.findOne({ _id: req.params.id }).then((sauce) => {
+			const filename = sauce.imageUrl.split("/images/")[1];
+			fs.unlinkSync(`images/${filename}`);
+		});
+	}
 	Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
 		.then((sauce) => res.status(200).json({ message: "Votre sauce a été modifiée !" }))
 		.catch((error) => res.status(400).json({ error }));
@@ -65,73 +72,41 @@ exports.deleteSauce = (req, res, next) => {
 exports.likeSauce = (req, res, next) => {
 	Sauce.findOne({ _id: req.params.id })
 		.then((sauce) => {
+			function likesAndDislikes(inc, pushOrPull, pushOrPullValue, message) {
+				var likesAndDislikesObject = { _id: req.params.id, $inc: inc };
+				if (pushOrPull === "push") {
+					likesAndDislikesObject.$push = pushOrPullValue;
+				}
+				if (pushOrPull === "pull") {
+					likesAndDislikesObject.$pull = pushOrPullValue;
+				}
+				Sauce.updateOne({ _id: req.params.id }, likesAndDislikesObject)
+					.then(() => res.status(201).json({ message: message }))
+					.catch((error) => res.status(400).json({ error }));
+			}
 			switch (req.body.like) {
 				// Like case
 				case 1:
 					// Check if usersLiked does not contain userId
 					if (!sauce.usersLiked.includes(req.body.userId)) {
-						Sauce.updateOne(
-							{ _id: req.params.id },
-							{
-								_id: req.params.id,
-								// add 1 like
-								$inc: { likes: 1 },
-								// push userId in usersLiked
-								$push: { usersLiked: req.body.userId },
-							}
-						)
-							.then(() => res.status(201).json({ message: "Votre 'J'aime' a été ajouté !" }))
-							.catch((error) => res.status(400).json({ error }));
+						likesAndDislikes({ likes: 1 }, "push", { usersLiked: req.body.userId }, "Votre 'J'aime' a été ajouté !");
 					}
 					break;
 				// Dislike case
 				case -1:
 					// Check if usersDisliked does not contain userId
 					if (!sauce.usersDisliked.includes(req.body.userId)) {
-						Sauce.updateOne(
-							{ _id: req.params.id },
-							{
-								_id: req.params.id,
-								// add 1 dislike
-								$inc: { dislikes: 1 },
-								// push userId in usersDisliked
-								$push: { usersDisliked: req.body.userId },
-							}
-						)
-							.then(() => res.status(201).json({ message: "Votre 'Je n'aime pas' a été ajouté !" }))
-							.catch((error) => res.status(400).json({ error }));
+						likesAndDislikes({ dislikes: 1 }, "push", { usersDisliked: req.body.userId }, "Votre 'Je n'aime pas' a été ajouté !");
 					}
 					break;
 				// Cancel Like/Dislike case
 				case 0:
 					// Check if usersLiked contain userId
 					if (sauce.usersLiked.includes(req.body.userId)) {
-						Sauce.updateOne(
-							{ _id: req.params.id },
-							{
-								_id: req.params.id,
-								// remove 1 like
-								$inc: { likes: -1 },
-								// pull userId in usersLiked
-								$pull: { usersLiked: req.body.userId },
-							}
-						)
-							.then(() => res.status(201).json({ message: "Annulation de votre 'J'aime' !" }))
-							.catch((error) => res.status(400).json({ error }));
+						likesAndDislikes({ likes: -1 }, "pull", { usersLiked: req.body.userId }, "Annulation de votre 'J'aime' !");
 						// Check if usersDisliked contain userId
 					} else if (sauce.usersDisliked.includes(req.body.userId)) {
-						Sauce.updateOne(
-							{ _id: req.params.id },
-							{
-								_id: req.params.id,
-								// remove 1 dislike
-								$inc: { dislikes: -1 },
-								// pull userId in usersDisliked
-								$pull: { usersDisliked: req.body.userId },
-							}
-						)
-							.then(() => res.status(201).json({ message: "Annulation de votre 'Je n'aime pas' !" }))
-							.catch((error) => res.status(400).json({ error }));
+						likesAndDislikes({ dislikes: -1 }, "pull", { usersDisliked: req.body.userId }, "Annulation de votre 'Je n'aime pas' !");
 					}
 					break;
 			}

@@ -27,6 +27,7 @@ mongoose
 	.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_CLUSTER}.ucdgk.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
+		useCreateIndex: true,
 	})
 	.then(() => console.log("Connexion à MongoDB réussie !"))
 	.catch(() => console.log("Connexion à MongoDB échouée !"));

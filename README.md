@@ -45,9 +45,9 @@ Mon rôle a été de créer le back-end et l'API du MVP de cette application à 
 
 -   **Exécutez Git bash**
 -   **git clone https://github.com/ArthurBlanc/ArthurBlanc_6_17012021**
-    -   Dans le dossier du premier projet, exécutez la commande ***npm install***, une fois l'installation terminée, démarrez le serveur avec la commande ***node server*** ou ***nodemon server***.
+    -   Dans le dossier du premier projet, exécutez la commande ***npm install***, une fois l'installation terminée, créez un fichier ***.env*** et remplisez le en prenant comme exemple le fichier ***.env.example***, enfin démarrez le serveur avec la commande ***node server*** ou ***nodemon server***.
 -   **git clone https://github.com/OpenClassrooms-Student-Center/dwj-projet6**
-    -   Dans le dossier du second projet, exécutez la commande ***npm install***, une fois l'installation terminée, démarrez avec la commande ***ng serve*** puis rendez-vous sur http://localhost:4200/.
+    -   Dans le dossier du second projet, exécutez la commande ***npm install node-sass@4.14.1*** puis ***npm install***, une fois l'installation terminée, démarrez avec la commande ***ng serve*** puis rendez-vous sur http://localhost:4200/.
 
 ## Développé avec
 
