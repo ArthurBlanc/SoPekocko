@@ -151,7 +151,7 @@ My role was to create the back-end and API of the MVP of this application using 
 
 -   `npm install` or `yarn`
 
-3. Create a **_.env_** file and fill it like **_.env.example_**
+3. Create a **.env** file and fill it out using the **.env.example** file as an example.
 
 4. Launch back-end:
 
