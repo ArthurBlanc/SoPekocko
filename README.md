@@ -111,7 +111,9 @@ This is a project carried out as part of the Web Developer training program at [
 
 ### Project (fictional) situation:
 
-As a freelance web developer for several years on different web projects, I was contacted by a successful hot sauce brand that wanted to develop an application to evaluate its hot sauces, which could become an online store in the future. The product owner of the brand decides that the MVP (Minimum Viable Product) of the project will be a web application allowing users to add their favorite sauces and like or dislike sauces added by other users.
+As a freelance web developer for several years on different web projects.
+
+I was contacted by a successful hot sauce brand that wanted to develop an application to evaluate its hot sauces, which could become an online store in the future. The product owner of the brand decides that the MVP (Minimum Viable Product) of the project will be a web application allowing users to add their favorite sauces and like or dislike sauces added by other users.
 
 My role was to create the back-end and API of the MVP of this application using Node.js, Express, and MongoDB.
 
