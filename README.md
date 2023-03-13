@@ -49,12 +49,6 @@ Mon rôle a été de créer le back-end et l'API du MVP de cette application à 
 
 ## Installation :
 
--   **Exécutez Git bash**
--   **git clone https://github.com/ArthurBlanc/SoPekocko**
-    -   Dans le dossier du premier projet, exécutez la commande **_npm install_**, une fois l'installation terminée, créez un fichier **_.env_** et remplisez le en prenant comme exemple le fichier **_.env.example_**, enfin démarrez le serveur avec la commande **_node server_** ou **_nodemon server_**.
--   **git clone https://github.com/ArthurBlanc/SoPekocko-Frontend**
-    -   Dans le dossier du second projet, exécutez la commande **_npm install node-sass@4.14.1_** puis **_npm install_**, une fois l'installation terminée, démarrez avec la commande **_ng serve_** puis rendez-vous sur http://localhost:4200/.
-
 ### Installation et lancement du back-end :
 
 1. Cloner le repository du back-end :
